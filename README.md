@@ -1,2 +1,2 @@
 # BufferObject
-two-level buffer Object
+Two-level buffer Object
