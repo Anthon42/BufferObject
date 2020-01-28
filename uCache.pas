@@ -3,20 +3,20 @@
 interface
 
 uses
+
   // user moduls
-  uTestableObject
+  RTTI
   //
     ;
+//type
+ { TCache<TKey, TValue> = interface
+    function AddObject(const AKey: TKey; const AValueObject: TValue; out AErrorStr: string): Boolean;
+    function DeleteObject(const AKey: TKey; out AErrorStr: string): Boolean;
+    function ReplaceObject(const AKey: TKey; const AValueObject: TValue; out AErrorStr: string): Boolean;
+    function GetObject(const AKey: TKey; out AValueObject: TValue; out AErrorStr: string): Boolean;
 
-type
-  TCache = interface
-    function AddObject(const AKey: string; const AObject: IBaseObject; out AErrorStr: string): Boolean;
-    function DeleteObject(const AKey: string; out AErrorStr: string): Boolean;
-    function ReplaceObject(const AKey: string; const AObject: IBaseObject; out AErrorStr: string): Boolean;
-    function GetObject(const AKey: string; out AObject: IBaseObject; out AErrorStr: string): Boolean;
-
-    procedure Clear;
-  end;
+    procedure Clear;  }
+ // end;
 
 implementation
 

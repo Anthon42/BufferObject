@@ -4,13 +4,13 @@ interface
 
 uses
   // useser moduls
-  uCache,uTestableObject,
+  uCache, uTestableObject, uFileCache,
   //
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
 
 type
-   TdfmMain = class(TForm)
+  TdfmMain = class(TForm)
     meLog: TMemo;
     btnAddObject: TButton;
 
@@ -18,7 +18,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure LogMessage(const AErrorStr: string);
   private
-    FMemoryCache: TMemoryCache;
+    FFileCache: TFileCache;
   public
     { Public declarations }
   end;
@@ -28,29 +28,43 @@ var
 
 implementation
 
+uses RTTI, uObjectContainer;
 {$R *.dfm}
 
 procedure TdfmMain.btnAddObjectClick(Sender: TObject);
 var
-  lTestObject: IBaseObject;
+  lTestObject: TExampleObject;
+
+  lResultObject: TValue;
+
+  lObjectContainer: TObjectContainer;
+
   lErrorStr: string;
 begin
-  lTestObject := TTestObject.Create;
+  lTestObject := TExampleObject.Create;
 
-  if not FMemoryCache.AddObject('Test', lTestObject, lErrorStr) then
-    LogMessage(lErrorStr);
-
+  lObjectContainer := TObjectContainer.Create(lTestObject);
   lTestObject := nil;
 
-  if not FMemoryCache.GetObject('Test1', lTestObject, lErrorStr) then
+  if not FFileCache.AddObject('Test2', lObjectContainer, lErrorStr) then
+  begin
+    FreeAndNil(lObjectContainer);
     LogMessage(lErrorStr);
+  end;
 
-  LogMessage(lTestObject.GetMessage);
+  if not FFileCache.GetObject('Test2', lResultObject, lErrorStr) then
+  begin
+    LogMessage(lErrorStr);
+  end;
+
+  lObjectContainer := lResultObject.AsType<TObjectContainer>;
+  lTestObject := lObjectContainer.GetObject;
+  LogMessage(lTestObject.GetMessage + IntToStr(lObjectContainer.FGetObjectCount));
 end;
 
 procedure TdfmMain.FormCreate(Sender: TObject);
 begin
-  FMemoryCache := TMemoryCache.Create;
+  FFileCache := TFileCache.Create;
 end;
 
 procedure TdfmMain.LogMessage(const AErrorStr: string);

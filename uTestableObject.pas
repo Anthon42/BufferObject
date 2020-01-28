@@ -3,20 +3,25 @@ unit uTestableObject;
 interface
 
 type
-  IBaseObject = interface
-    function GetMessage: string;
-  end;
-
-  TTestObject = class(TInterfacedObject, IBaseObject)
+  TExampleObject = class(TObject)
+  strict private
+    FContent: string;
   public
     function GetMessage: string;
+    procedure AfterConstruction; override;
   end;
 
 implementation
 
-function TTestObject.GetMessage: string;
+procedure TExampleObject.AfterConstruction;
 begin
-  Result := 'Message Text';
+  inherited;
+  FContent := 'TestMessage';
+end;
+
+function TExampleObject.GetMessage: string;
+begin
+  Result := FContent;
 end;
 
 end.

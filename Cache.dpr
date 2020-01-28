@@ -5,7 +5,9 @@ uses
   uMain in 'uMain.pas' {dfmMain},
   uCache in 'uCache.pas',
   uTestableObject in 'uTestableObject.pas',
-  uFileCache in 'uFileCache.pas';
+  uFileCache in 'uFileCache.pas',
+  uObjectContainer in 'uObjectContainer.pas',
+  uMemoryCache in 'uMemoryCache.pas';
 
 {$R *.res}
 
