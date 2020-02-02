@@ -6,21 +6,24 @@ uses
   // user moduls
   uCache, uTestableObject,
   //
-  System.Generics.Collections, System.SysUtils, DBXJSONReflect, System.JSON, RTTI;
+  System.Generics.Collections, DBXJSONReflect, System.JSON, RTTI;
 
 type
-
-  TFileCache = class(TObject)
-  strict private
-    FObjectDictionary: TObjectDictionary<string, string>;
+  TFileCache<TKey, T> = class(TObject)
+  private
+    FObjectDictionary: TObjectDictionary<TKey, string>;
 
     FMarshal: TJSONMarshal; // Сериализатор
     FUnMarshal: TJSONUnMarshal; // Десериализатор
     procedure DeleteAllFiles;
   public
-    function AddObject(const AKey: string; const AValueObject: TValue; out AErrorStr: string): Boolean;
-    function DeleteObject(const AKey: string; out AErrorStr: string): Boolean;
-    function GetObject(const AKey: string; out AValueObject: TValue; out AErrorStr: string): Boolean;
+    function AddObject(const AKey: TKey; const AValueObject: T;
+      out AErrorStr: string): Boolean;
+    function DeleteObject(const AKey: TKey; out AErrorStr: string): Boolean;
+    function ExtractObject(const AKey: TKey; out AValueObject: T;
+      out AErrorStr: string): Boolean;
+    function Count: Integer;
+
     procedure Clear;
 
     constructor Create; reintroduce;
@@ -33,35 +36,30 @@ const
 
 implementation
 
-uses System.Classes, System.IOUtils, uObjectContainer;
+uses System.Classes, System.IOUtils, uObjectContainer, System.SysUtils,
+  uExUtils;
 
-function TFileCache.AddObject(const AKey: string; const AValueObject: TValue; out AErrorStr: string): Boolean;
+function TFileCache<TKey, T>.AddObject(const AKey: TKey; const AValueObject: T;
+  out AErrorStr: string): Boolean;
 var
-  lSerializedObject: TJSONObject;
-  lContainer: TObjectContainer;
-  lStringObject: TStringStream;
+  lRTTIValue: TValue;
   lFullFileName: string;
+  lSerializedObject: TJSONObject;
+  lStringObject: TStringStream;
 begin
-  lStringObject := nil;
-  lSerializedObject := nil;
-  lContainer := nil;
-  lStringObject := nil;
-
   Result := False;
-
-  if not AValueObject.IsObject then
-  begin
-    AErrorStr := self.ClassName + '.AddObject ' + 'Неизвестный тип';
-    Exit;
-  end;
+  lSerializedObject := nil;
+  lStringObject := nil;
 
   if not ForceDirectories(constDefaultDir) then
   begin
-    AErrorStr := self.ClassName + '.AddObject ' + 'Невозможно создать директорию';
+    AErrorStr := self.ClassName + '.AddObject ' +
+      'Невозможно создать директорию';
     Exit;
   end;
 
-  lFullFileName := constDefaultDir + AKey + constDefaultFileExtension;
+  lFullFileName := constDefaultDir + TValue.From<TKey>(AKey).AsString +
+    constDefaultFileExtension;
 
   if TFile.Exists(lFullFileName) then
   begin
@@ -71,9 +69,16 @@ begin
 
   try
     try
-      lContainer := AValueObject.AsType<TObjectContainer>;
+      lRTTIValue := TValue.From<T>(AValueObject);
 
-      lSerializedObject := FMarshal.Marshal(lContainer) as TJSONObject;
+      if not lRTTIValue.IsObject then
+      begin
+        AErrorStr := self.ClassName + '.AddObject ' + 'Неизвестный тип';
+        Exit;
+      end;
+
+      lSerializedObject := FMarshal.Marshal(lRTTIValue.AsType<TObject>)
+        as TJSONObject;
 
       lStringObject := TStringStream.Create(lSerializedObject.ToString);
 
@@ -82,51 +87,58 @@ begin
       FObjectDictionary.Add(AKey, lFullFileName);
 
       Result := True;
-
-      FreeAndNil(lContainer);
     except
       on E: Exception do
       begin
-        AErrorStr := self.ClassName + '.AddObject ' + E.Message;
+        AErrorStr := self.ClassName + '.GetObject ' + E.Message;
       end;
     end;
+
   finally
-    FreeAndNil(lStringObject);
-    FreeAndNil(lSerializedObject);
-    FreeAndNil(lStringObject);
+    FreeAndNilEx(lStringObject);
+    FreeAndNilEx(lSerializedObject);
   end;
 end;
 
-procedure TFileCache.BeforeDestruction;
+procedure TFileCache<TKey, T>.BeforeDestruction;
 begin
-  FreeAndNil(FObjectDictionary);
+  FreeAndNilEx(FObjectDictionary);
+  DeleteAllFiles;
   inherited;
 end;
 
-procedure TFileCache.Clear;
+procedure TFileCache<TKey, T>.Clear;
 begin
   FObjectDictionary.Clear;
   DeleteAllFiles;
 end;
 
-constructor TFileCache.Create;
+function TFileCache<TKey, T>.Count: Integer;
+begin
+  Result := FObjectDictionary.Count;
+end;
+
+constructor TFileCache<TKey, T>.Create;
 begin
   inherited Create;
 
   FMarshal := TJSONMarshal.Create(TJSONConverter.Create);
   FUnMarshal := TJSONUnMarshal.Create;
 
-  FObjectDictionary := TObjectDictionary<string, string>.Create;
+  FObjectDictionary := TObjectDictionary<TKey, string>.Create;
+
+  // Очищаем старые файлы, чтобы не мешали работе буфера
+  DeleteAllFiles;
 end;
 
-procedure TFileCache.DeleteAllFiles;
+procedure TFileCache<TKey, T>.DeleteAllFiles;
 begin
-  // Очищаем старые файлы, чтобы не мешали работе буфера
   if TDirectory.Exists(constDefaultDir) then
     TDirectory.Delete(constDefaultDir, True);
 end;
 
-function TFileCache.DeleteObject(const AKey: string; out AErrorStr: string): Boolean;
+function TFileCache<TKey, T>.DeleteObject(const AKey: TKey;
+  out AErrorStr: string): Boolean;
 var
   lFileName: string;
 begin
@@ -141,13 +153,15 @@ begin
   if not TFile.Exists(lFileName) then
   begin
     FObjectDictionary.Remove(AKey);
-    AErrorStr := self.ClassName + '.DeleteObject ' + 'Не найден Объект на диске';
+    AErrorStr := self.ClassName + '.DeleteObject ' +
+      'Не найден Объект на диске';
   end;
 
   if not DeleteFile(lFileName) then
   begin
     FObjectDictionary.Remove(AKey);
-    AErrorStr := self.ClassName + '.DeleteObject ' + 'Невозможно удалить объект на диске';
+    AErrorStr := self.ClassName + '.DeleteObject ' +
+      'Невозможно удалить объект';
     Exit;
   end;
 
@@ -155,18 +169,20 @@ begin
   Result := True;
 end;
 
-function TFileCache.GetObject(const AKey: string; out AValueObject: TValue; out AErrorStr: string): Boolean;
+function TFileCache<TKey, T>.ExtractObject(const AKey: TKey; out AValueObject: T;
+  out AErrorStr: string): Boolean;
 var
   lFileName: string;
-  lContainer: TObjectContainer;
   lStringObject: TStringStream;
   lUnSerializedObject: TJSONObject;
+  lContainer: TObject;
+  lRTTIValue: TValue;
+
+  lPair: TPair<TKey, string>;
 begin
   Result := False;
-  lStringObject := nil;
-  lUnSerializedObject := nil;
 
-  if not FObjectDictionary.TryGetValue(AKey, lFileName) then
+  if not FObjectDictionary.ContainsKey(AKey) then
   begin
     AErrorStr := self.ClassName + '.GetObject ' + 'Объект не существует';
     Exit;
@@ -174,15 +190,30 @@ begin
 
   try
     try
+      lPair := FObjectDictionary.ExtractPair(AKey);
+
+      lFileName := lPair.Value;
+
       lStringObject := TStringStream.Create;
 
       lStringObject.LoadFromFile(lFileName);
 
-      lUnSerializedObject := TJSONObject.ParseJSONValue(lStringObject.DataString) as TJSONObject;
+      lUnSerializedObject := TJSONObject.ParseJSONValue
+        (lStringObject.DataString) as TJSONObject;
 
-      lContainer := FUnMarshal.Unmarshal(lUnSerializedObject) as TObjectContainer;
+      lContainer := FUnMarshal.Unmarshal(lUnSerializedObject) as TObject;
 
-      AValueObject := TValue.From<TObjectContainer>(lContainer);
+      lRTTIValue := TValue.From<TObject>(lContainer);
+
+      AValueObject := lRTTIValue.AsType<T>;
+
+      if not DeleteFile(lFileName) then
+      begin
+        AErrorStr := self.ClassName + '.DeleteObject ' +
+          'Невозможно удалить объект';
+        Exit;
+      end;
+
       Result := True;
     except
       on E: Exception do

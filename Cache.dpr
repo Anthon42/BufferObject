@@ -6,8 +6,10 @@ uses
   uCache in 'uCache.pas',
   uTestableObject in 'uTestableObject.pas',
   uFileCache in 'uFileCache.pas',
-  uObjectContainer in 'uObjectContainer.pas',
-  uMemoryCache in 'uMemoryCache.pas';
+  uMemoryCache in 'uMemoryCache.pas',
+  uExUtils in 'uExUtils.pas',
+  uMainCache in 'uMainCache.pas',
+  Indexes in 'Indexes.pas';
 
 {$R *.res}
 

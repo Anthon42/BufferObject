@@ -3,73 +3,109 @@ unit uMain;
 interface
 
 uses
-  // useser moduls
-  uCache, uTestableObject, uFileCache,
+
+  uTestableObject, uFileCache, uMemoryCache, uExUtils,
+  uMainCache,
   //
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
 
 type
   TdfmMain = class(TForm)
     meLog: TMemo;
     btnAddObject: TButton;
+    btnLoadFromCache: TButton;
+    btnClear: TButton;
 
     procedure btnAddObjectClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure LogMessage(const AErrorStr: string);
+    procedure btnLoadFromCacheClick(Sender: TObject);
+    procedure btnClearClick(Sender: TObject);
+
   private
-    FFileCache: TFileCache;
+    FFileCache: TFileCache<string, TTestObject>;
+    FMemoryCache: TMemoryCache<string, TTestObject>;
+
+    FMainCache: TMainCache<string, TTestObject>;
+
   public
     { Public declarations }
   end;
+
+const
+  constMemoryCacheSize = 10;
+  constFileMemoryCache = 5;
 
 var
   dfmMain: TdfmMain;
 
 implementation
 
-uses RTTI, uObjectContainer;
+uses RTTI;
 {$R *.dfm}
 
 procedure TdfmMain.btnAddObjectClick(Sender: TObject);
 var
-  lTestObject: TExampleObject;
+  lTestObject: TTestObject;
 
-  lResultObject: TValue;
-
-  lObjectContainer: TObjectContainer;
-
-  lErrorStr: string;
+  lKey: string;
+  lCurrentItem: Integer;
 begin
-  lTestObject := TExampleObject.Create;
-
-  lObjectContainer := TObjectContainer.Create(lTestObject);
-  lTestObject := nil;
-
-  if not FFileCache.AddObject('Test2', lObjectContainer, lErrorStr) then
+  for lCurrentItem := 0 to 16 do
   begin
-    FreeAndNil(lObjectContainer);
-    LogMessage(lErrorStr);
-  end;
+    lTestObject := nil;
+    lKey := 'Test' + IntToStr(lCurrentItem);
+    lTestObject := TTestObject.Create(lKey);
 
-  if not FFileCache.GetObject('Test2', lResultObject, lErrorStr) then
+    FMainCache.AddObject(lKey, lTestObject);
+
+  end;
+end;
+
+procedure LogMessage(const AErrorStr: string);
+begin
+  dfmMain.meLog.Lines.Add(AErrorStr);
+end;
+
+procedure TdfmMain.btnClearClick(Sender: TObject);
+begin
+  meLog.Clear;
+end;
+
+procedure TdfmMain.btnLoadFromCacheClick(Sender: TObject);
+var
+  lTestObject: TTestObject;
+
+  lKey: string;
+  lCurrentItem: Integer;
+begin
+  for lCurrentItem := 0 to 16 do
   begin
-    LogMessage(lErrorStr);
-  end;
+    lTestObject := nil;
 
-  lObjectContainer := lResultObject.AsType<TObjectContainer>;
-  lTestObject := lObjectContainer.GetObject;
-  LogMessage(lTestObject.GetMessage + IntToStr(lObjectContainer.FGetObjectCount));
+    lKey := 'Test' + IntToStr(lCurrentItem);
+
+    FMainCache.ExtractObject(lKey, lTestObject);
+    if Assigned(lTestObject) then
+    begin
+      LogMessage(lTestObject.GetMessage);
+      FreeAndNilEx(lTestObject);
+    end;
+  end;
 end;
 
 procedure TdfmMain.FormCreate(Sender: TObject);
 begin
-  FFileCache := TFileCache.Create;
-end;
+  FFileCache := TFileCache<string, TTestObject>.Create;
 
-procedure TdfmMain.LogMessage(const AErrorStr: string);
-begin
-  meLog.Lines.Add(AErrorStr);
+  FMemoryCache := TMemoryCache<string, TTestObject>.Create
+    (constMemoryCacheSize);
+
+  FMainCache := TMainCache<string, TTestObject>.Create(constMemoryCacheSize,
+    constFileMemoryCache);
+
+  FMainCache.OnLogingMethod := LogMessage;
 end;
 
 end.

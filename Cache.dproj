@@ -18,11 +18,6 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
-        <Base_Win64>true</Base_Win64>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
         <Cfg_1>true</Cfg_1>
         <CfgParent>Base</CfgParent>
@@ -68,9 +63,6 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_Win64)'!=''">
-        <DCC_UsePackage>DBXSqliteDriver;dxFlowChartRS26;dxPSdxMapControlLnkRS26;vclactnband;dxBarRS26;vclFireDAC;PKIEDB26;OpenWireBindingPkg;dxFireDACEMFRS26;tethering;dxSpreadSheetInplaceRichEditRS26;FireDACADSDriver;dxSkinVisualStudio2013BlueRS26;dxRichEditCoreRS26;dxPSdxSpreadSheetLnkRS26;dxSkinSharpPlusRS26;OpenWireEditorPkg;vcltouch;vcldb;dxPSTeeChartRS26;dxSkinFoggyRS26;dxSkinVisualStudio2013DarkRS26;dxSkinOffice2013DarkGrayRS26;OpenWireEditorBasicPkg;dxGDIPlusRS26;dxAuthorizationAgentsRS26;dxPSdxFCLnkRS26;vclib;dxPSLnksRS26;dxPsPrVwAdvRS26;cxGridRS26;dxPDFViewerRS26;dxSkinSpringTimeRS26;vclx;dxPScxTLLnkRS26;TimingLabBasicPkg;dxSkinOffice2010BlueRS26;RESTBackendComponents;dxSkinOffice2016DarkRS26;VCLRESTComponents;dxSkinMoneyTwinsRS26;dxSkinOffice2016ColorfulRS26;VisionLabPkg;EhLibDBXDataDrivers260;dxSkinValentineRS26;dxSkinHighContrastRS26;vclie;bindengine;CloudService;dxmdsRS26;FireDACMySQLDriver;dxdborRS26;dxSkinOffice2013WhiteRS26;dxFireDACServerModeRS26;bindcompdbx;IndyIPServer;cxPivotGridRS26;IndySystem;dxSkinDarkRoomRS26;OpenWireStudioAudioHostPkg;cxTreeListdxBarPopupMenuRS26;dsnapcon;cxTreeListRS26;dxPScxPivotGridLnkRS26;Mitov_VCL_VideoLab_Basic;cxSchedulerRibbonStyleEventEditorRS26;dxPSCoreRS26;FireDACMSAccDriver;fmxFireDAC;dxSpreadSheetRS26;vclimg;dxBarExtItemsRS26;dxPSdxGaugeControlLnkRS26;OpenWireStudioHostPkg;dxSkinLondonLiquidSkyRS26;dxSkinSevenRS26;dxdbtrRS26;FMXTee;dxRichEditControlCoreRS26;soaprtl;DbxCommonDriver;dxFlowChartAdvancedCustomizeFormRS26;dxSkinLiquidSkyRS26;Mitov_VCL_AudioLab_Basic;dxDockingRS26;xmlrtl;soapmidas;fmxobj;cxLibraryRS26;VideoLabBasicPkg;rtl;DbxClientDriver;cxDataRS26;dxPScxSchedulerLnkRS26;VideoLabAdditionalPkg;dxSpreadSheetConditionalFormattingDialogsRS26;SignalLabBasicPkg;Mitov_VCL_VideoLab_Additional;appanalytics;Mitov_VCL_Runtime;dxRibbonCustomizationFormRS26;cxSchedulerGridRS26;IndyIPClient;bindcompvcl;dxSkinVisualStudio2013LightRS26;TeeUI;dxADOEMFRS26;VclSmp;OpenWireBindingVclPkg;AudioLabGenericBasicPkg;dxRibbonRS26;dxPScxCommonRS26;dxRichEditDocumentModelRS26;dxPScxGridLnkRS26;dxSkinDevExpressDarkStyleRS26;dxSpreadSheetCoreRS26;RESTComponents;dxSkinGlassOceansRS26;DBXInterBaseDriver;dxPScxExtCommonRS26;dxSkinPumpkinRS26;EhLibADODataDrivers260;dxSkinXmas2008BlueRS26;Mitov_VCL_BasicLab;dxSkinOffice2007SilverRS26;cxPageControlRS26;dxSkinTheBezierRS26;dxSkinDevExpressStyleRS26;OpenWireBindingFmxPkg;dxRichEditControlRS26;dxGaugeControlRS26;dxorgcRS26;dxPScxVGridLnkRS26;PKIECtrl26;bindcompfmx;dxSkinOffice2007PinkRS26;inetdb;dxSkinOffice2007BlueRS26;dxSkinStardustRS26;dxBarDBNavRS26;dxDBXServerModeRS26;dxSkinTheAsphaltWorldRS26;dxSkinSilverRS26;FmxTeeUI;dxLayoutControlRS26;dxSkinBlueprintRS26;FireDACIBDriver;fmx;fmxdae;dxServerModeRS26;dxWizardControlRS26;GMLib_DXE8;OpenWireStudioVideoHostPkg;dxSkiniMaginaryRS26;dxTabbedMDIRS26;dxEMFRS26;dbexpress;IndyCore;dxComnRS26;dsnap;dxSkinSharpRS26;FireDACCommon;cxSchedulerTreeBrowserRS26;FIBPlus_XE7;dxADOServerModeRS26;soapserver;dxSkinOffice2007BlackRS26;cxPivotGridOLAPRS26;cxVerticalGridRS26;dxtrmdRS26;DBXMySQLDriver;cxEditorsRS26;cxSchedulerRS26;cxSchedulerWebServiceStorageRS26;dxSkinMetropolisDarkRS26;dxSkinOffice2010BlackRS26;dxPSdxLCLnkRS26;FireDACCommonODBC;FireDACCommonDriver;dxMapControlRS26;dxSkinBlackRS26;dxSkinOffice2013LightGrayRS26;inet;dxSpellCheckerRS26;dxSkinCoffeeRS26;IndyIPCommon;OpenWirePkg;fcxd26;vcl;dxSpreadSheetCoreConditionalFormattingDialogsRS26;dxPSdxDBOCLnkRS26;EhLib260;dxSkinMetropolisRS26;Mitov_BasicLab;dxSpreadSheetReportDesignerRS26;MediaLabBasicPkg;dxPScxPCProdRS26;Mitov_VCL_VisionLab;GMLib_DXE8_VCL;dxNavBarRS26;dxCoreRS26;cxExportRS26;TeeDB;FireDAC;dxThemeRS26;dxHttpIndyRequestRS26;dxPSPrVwRibbonRS26;dxSkinOffice2010SilverRS26;Mitov_Runtime;FireDACSqliteDriver;FireDACPgDriver;ibmonitor;dxPSRichEditControlLnkRS26;dxSkinSevenClassicRS26;cxPivotGridChartRS26;dxPSDBTeeChartRS26;ibxpress;Tee;OpenWireBindingDatabasePkg;ibxbindings;dxPSdxDBTVLnkRS26;vclwinx;dxOfficeCoreRS26;dxTileControlRS26;dxSkinsCoreRS26;CustomIPTransport;vcldsnap;AudioLabBasicPkg;bindcomp;dxSkinLilianRS26;dxSkinSummer2008RS26;dxPSdxOCLnkRS26;dxSkinVS2010RS26;SynEdit_R;dxSkinBlueRS26;dbxcds;adortl;SignalLabGenericBasicPkg;dxSkinMcSkinRS26;dxSkinDarkSideRS26;dxSpreadSheetCoreDialogsRS26;VideoLabGenericBasicPkg;dxBarExtDBItemsRS26;dsnapxml;dbrtl;inetdbxpress;IndyProtocols;dxSkinOffice2007GreenRS26;dxRichEditInplaceRS26;dxSkinWhiteprintRS26;dxPSdxPDFViewerLnkRS26;dxSkinCaramelRS26;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
@@ -105,8 +97,10 @@
         <DCCReference Include="uCache.pas"/>
         <DCCReference Include="uTestableObject.pas"/>
         <DCCReference Include="uFileCache.pas"/>
-        <DCCReference Include="uObjectContainer.pas"/>
         <DCCReference Include="uMemoryCache.pas"/>
+        <DCCReference Include="uExUtils.pas"/>
+        <DCCReference Include="uMainCache.pas"/>
+        <DCCReference Include="Indexes.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -606,7 +600,6 @@
             </Deployment>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

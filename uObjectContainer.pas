@@ -2,10 +2,8 @@ unit uObjectContainer;
 
 interface
 
-uses uTestableObject;
-
 type
-  TGenericObjectContainer<T> = class(TObject)
+  TObjectContainer<T> = class(TObject)
   strict private
     FSavedObject: T;
     FLastActionTime: TDateTime;
@@ -20,20 +18,20 @@ type
 
   end;
 
-  TObjectContainer = TGenericObjectContainer<TExampleObject>;
+//  TObjectContainer = TGenericObjectContainer<TestableObject>;
 
 implementation
 
 uses System.SysUtils;
 
-procedure TGenericObjectContainer<T>.BeforeDestruction;
+procedure TObjectContainer<T>.BeforeDestruction;
 begin
   FreeAndNil(FSavedObject);
 
   inherited;
 end;
 
-constructor TGenericObjectContainer<T>.Create(AValueObject: T);
+constructor TObjectContainer<T>.Create(AValueObject: T);
 begin
   inherited Create;
   FSavedObject := AValueObject;
@@ -43,7 +41,7 @@ begin
   FGetObjectCount := 0;
 end;
 
-function TGenericObjectContainer<T>.GetObject: T;
+function TObjectContainer<T>.GetObject: T;
 begin
   Inc(FGetObjectCount);
   UpdateTime;
@@ -51,7 +49,7 @@ begin
   Result := FSavedObject;
 end;
 
-procedure TGenericObjectContainer<T>.UpdateTime;
+procedure TObjectContainer<T>.UpdateTime;
 begin
   FLastActionTime := Time;
 end;

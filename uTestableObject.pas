@@ -3,23 +3,29 @@ unit uTestableObject;
 interface
 
 type
-  TExampleObject = class(TObject)
+  TTestObject = class(TObject)
   strict private
     FContent: string;
   public
+    constructor Create(const AMessage: string); reintroduce;
+
     function GetMessage: string;
     procedure AfterConstruction; override;
   end;
 
 implementation
 
-procedure TExampleObject.AfterConstruction;
+procedure TTestObject.AfterConstruction;
 begin
   inherited;
-  FContent := 'TestMessage';
 end;
 
-function TExampleObject.GetMessage: string;
+constructor TTestObject.Create(const AMessage: string);
+begin
+  FContent := AMessage;
+end;
+
+function TTestObject.GetMessage: string;
 begin
   Result := FContent;
 end;
