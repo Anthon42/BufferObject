@@ -3,7 +3,6 @@ program Cache;
 uses
   Vcl.Forms,
   uMain in 'uMain.pas' {dfmMain},
-  uCache in 'uCache.pas',
   uTestableObject in 'uTestableObject.pas',
   uFileCache in 'uFileCache.pas',
   uMemoryCache in 'uMemoryCache.pas',

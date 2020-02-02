@@ -2,7 +2,7 @@ unit uMainCache;
 
 interface
 
-uses uCache, uMemoryCache, uFileCache;
+uses uMemoryCache, uFileCache;
 
 type
   TLogMethod = procedure(const lMessage: string);
@@ -29,8 +29,6 @@ type
   end;
 
 implementation
-
-uses uObjectContainer;
 
 procedure TMainCache<TKey, T>.AddObject(const AKey: TKey;
   const AValueObject: T);

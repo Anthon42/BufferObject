@@ -3,7 +3,7 @@
 interface
 
 uses
-  uCache, uTestableObject, uObjectContainer, uExUtils, Indexes,
+  uTestableObject, uExUtils, Indexes,
   //
   System.Generics.Collections, System.SysUtils;
 

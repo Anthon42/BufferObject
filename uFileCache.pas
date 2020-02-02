@@ -4,7 +4,7 @@ interface
 
 uses
   // user moduls
-  uCache, uTestableObject,
+  uTestableObject,
   //
   System.Generics.Collections, DBXJSONReflect, System.JSON, RTTI;
 
@@ -36,7 +36,7 @@ const
 
 implementation
 
-uses System.Classes, System.IOUtils, uObjectContainer, System.SysUtils,
+uses System.Classes, System.IOUtils, System.SysUtils,
   uExUtils;
 
 function TFileCache<TKey, T>.AddObject(const AKey: TKey; const AValueObject: T;
@@ -169,8 +169,8 @@ begin
   Result := True;
 end;
 
-function TFileCache<TKey, T>.ExtractObject(const AKey: TKey; out AValueObject: T;
-  out AErrorStr: string): Boolean;
+function TFileCache<TKey, T>.ExtractObject(const AKey: TKey;
+  out AValueObject: T; out AErrorStr: string): Boolean;
 var
   lFileName: string;
   lStringObject: TStringStream;

@@ -94,7 +94,6 @@
             <Form>dfmMain</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="uCache.pas"/>
         <DCCReference Include="uTestableObject.pas"/>
         <DCCReference Include="uFileCache.pas"/>
         <DCCReference Include="uMemoryCache.pas"/>
